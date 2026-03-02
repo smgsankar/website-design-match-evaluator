@@ -100,11 +100,11 @@ export async function POST(request: Request) {
         urlValidation.normalizedUrl,
         viewport,
       );
-    } catch {
+    } catch(error) {
       throw new AppError({
         status: 502,
         code: "CAPTURE_FAILED",
-        message: "Could not capture the website screenshot.",
+        message: error instanceof Error ? error.message : "Could not capture the website screenshot.",
         hint: "Ensure the URL is publicly reachable and fully loaded in a browser.",
       });
     }
