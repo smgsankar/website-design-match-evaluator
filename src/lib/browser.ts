@@ -6,15 +6,12 @@ const NAVIGATION_TIMEOUT_MS = 30_000;
 
 async function launchBrowser(): Promise<Browser> {
   if (process.env.VERCEL === "1") {
-    const chromium = (await import("@sparticuz/chromium-min")).default;
+    const chromium = (await import("@sparticuz/chromium")).default;
     const playwright = await import("playwright-core");
-
-    const executablePath =
-      process.env.CHROMIUM_EXECUTABLE_PATH ?? (await chromium.executablePath());
 
     return playwright.chromium.launch({
       args: chromium.args,
-      executablePath,
+      executablePath: await chromium.executablePath(),
       headless: true,
     });
   }

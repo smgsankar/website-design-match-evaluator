@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.39.0",
-    "@sparticuz/chromium-min": "^143.0.4",
+    "@sparticuz/chromium": "^143.0.4",
     "@upstash/ratelimit": "^2.0.8",
     "@upstash/redis": "^1.36.3",
     "clsx": "^2.1.1",
