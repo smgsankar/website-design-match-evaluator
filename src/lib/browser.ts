@@ -45,12 +45,27 @@ export async function captureWebsiteScreenshot(
       timeout: NAVIGATION_TIMEOUT_MS,
     });
 
-    await page.waitForTimeout(1200);
+    try {
+      await page.waitForLoadState("load", { timeout: 5_000 });
+    } catch {
+      // Some local dev servers never reach a stable load state; continue.
+    }
+
+    try {
+      await page.evaluate(async () => {
+        await document.fonts?.ready;
+      });
+    } catch {
+      // Ignore font-readiness failures from cross-origin stylesheets.
+    }
+
+    await page.waitForTimeout(500);
 
     const buffer = await page.screenshot({
       type: "png",
       fullPage: false,
       animations: "disabled",
+      omitBackground: true,
     });
 
     await context.close();

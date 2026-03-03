@@ -94,6 +94,7 @@ See `.env.example` for full list.
 | `UPSTASH_REDIS_REST_URL` | Yes | Redis endpoint for rate limiting |
 | `UPSTASH_REDIS_REST_TOKEN` | Yes | Redis auth token |
 | `ALLOW_LOCALHOST_CAPTURE` | No | Allow `localhost`/`127.0.0.1`/`::1` URL capture when `true` |
+| `LOCALHOST_CAPTURE_SCALE_FACTOR` | No | Optional localhost-only viewport scaling override (for HiDPI design exports, e.g. `2`) |
 
 ## Scripts
 

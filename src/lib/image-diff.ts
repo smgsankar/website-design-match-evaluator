@@ -26,11 +26,13 @@ export async function generateDiff(
 
   const normalizedDesign = await sharp(designBuffer)
     .resize(width, height, { fit: "fill" })
+    .flatten({ background: "#ffffff" })
     .png()
     .toBuffer();
 
   const normalizedCapture = await sharp(capturedBuffer)
     .resize(width, height, { fit: "fill" })
+    .flatten({ background: "#ffffff" })
     .png()
     .toBuffer();
 

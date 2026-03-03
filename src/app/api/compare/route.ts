@@ -14,6 +14,34 @@ const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 const MAX_VIEWPORT_WIDTH = 2560;
 const MAX_VIEWPORT_HEIGHT = 2560;
 
+function isLocalhostUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    return (
+      parsed.hostname === "localhost" ||
+      parsed.hostname === "127.0.0.1" ||
+      parsed.hostname === "::1" ||
+      parsed.hostname === "[::1]"
+    );
+  } catch {
+    return false;
+  }
+}
+
+function getCaptureScaleForLocalhost(width: number, height: number): number {
+  const configuredScale = Number(process.env.LOCALHOST_CAPTURE_SCALE_FACTOR ?? "");
+  if (Number.isFinite(configuredScale) && configuredScale > 0) {
+    return configuredScale;
+  }
+
+  // Heuristic for HiDPI reference exports (commonly @2x).
+  if (width >= 2200 || height >= 2200) {
+    return 2;
+  }
+
+  return 1;
+}
+
 export async function POST(request: Request) {
   const { userId } = await auth();
 
@@ -92,13 +120,22 @@ export async function POST(request: Request) {
       width: designMeta.width,
       height: designMeta.height,
     };
+    const isLocalhostTarget = isLocalhostUrl(urlValidation.normalizedUrl);
+    const captureScale = isLocalhostTarget
+      ? getCaptureScaleForLocalhost(designMeta.width, designMeta.height)
+      : 1;
+    const captureViewport = {
+      ...viewport,
+      width: Math.max(320, Math.round(viewport.width / captureScale)),
+      height: Math.max(320, Math.round(viewport.height / captureScale)),
+    };
 
     let capturedBuffer: Buffer;
 
     try {
       capturedBuffer = await captureWebsiteScreenshot(
         urlValidation.normalizedUrl,
-        viewport,
+        captureViewport,
       );
     } catch(error) {
       throw new AppError({
