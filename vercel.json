@@ -1,0 +1,9 @@
+{
+  "functions": {
+    "src/app/api/compare/route.ts": {
+      "memory": 3008,
+      "maxDuration": 60,
+      "includeFiles": "node_modules/@sparticuz/chromium/**"
+    }
+  }
+}
